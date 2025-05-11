@@ -1,20 +1,26 @@
-# Etapa 1: Construcción del proyecto
-FROM maven:3.9.6-eclipse-temurin-21 as builder
+# Etapa de construcción: usa Maven con Java 21 para compilar la aplicación
+FROM maven:3.9.6-eclipse-temurin-21 AS builder
+
+# Establece el directorio de trabajo dentro del contenedor
 WORKDIR /app
-COPY pom.xml .
-COPY src ./src
+
+# Copia todos los archivos del proyecto al contenedor
+COPY . .
+
+# Compila el proyecto y genera el archivo .jar, omitiendo los tests
 RUN mvn clean package -DskipTests
 
-# Etapa 2: Imagen final
-FROM eclipse-temurin:21-jdk-alpine
-VOLUME /tmp
+# Etapa de ejecución: imagen más liviana solo con Java Runtime
+FROM eclipse-temurin:21-jre
+
+# Establece el directorio de trabajo en el contenedor final
 WORKDIR /app
 
-# Copiamos el JAR desde la imagen builder
-COPY --from=builder /app/target/labexamns-*.jar app.jar
+# Copia el JAR generado desde la etapa de construcción
+COPY --from=builder /app/target/lab-examns-0.0.1-SNAPSHOT.jar app.jar
 
-# Exponer el puerto
+# Expone el puerto donde correrá la aplicación
 EXPOSE 8080
 
-# Comando para ejecutar la aplicación
+# Comando para ejecutar el JAR
 ENTRYPOINT ["java", "-jar", "app.jar"]
