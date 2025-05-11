@@ -1,4 +1,3 @@
-version: '3.8'
 
 services:
   labexamns-api:
@@ -9,4 +8,4 @@ services:
     ports:
       - "8080:8080"
     environment:
-      SPRING_DATA_MONGODB_URI: mongodb://<IP_PUBLICA_MONGO>:27017/lab_exams_db
+      SPRING_DATA_MONGODB_URI: mongodb://<IP_Privada_MONGO>:27017/lab_exams_db
